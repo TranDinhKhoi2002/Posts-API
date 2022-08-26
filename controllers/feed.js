@@ -6,6 +6,8 @@ const Post = require("../models/post");
 const User = require("../models/user");
 const io = require("../socket");
 
+const { clearImage } = require("../util/file");
+
 exports.getPosts = async (req, res, next) => {
   const currentPage = req.query.page || 1;
   const perPage = 2;
@@ -236,13 +238,4 @@ exports.updateStatus = async (req, res, next) => {
     }
     next(err);
   }
-};
-
-const clearImage = (filePath) => {
-  filePath = path.join(__dirname, "..", filePath);
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
 };

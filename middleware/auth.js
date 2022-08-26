@@ -3,9 +3,8 @@ const jwt = require("jsonwebtoken");
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
-    const error = new Error("Not authenticated.");
-    error.statusCode = 401;
-    throw error;
+    req.isAuth = false;
+    return next();
   }
 
   const token = authHeader.split(" ")[1];
@@ -13,18 +12,18 @@ module.exports = (req, res, next) => {
   let decodedToken;
   try {
     // We can alternatively use jwt.decode() but it just decodes, it doesn't verify the token whether is valid or not. While verify do both
-    decodedToken = jwt.verify(token, "secret");
+    decodedToken = jwt.verify(token, "supersecret");
   } catch (err) {
-    err.statusCode = 500;
-    throw err;
+    req.isAuth = false;
+    return next();
   }
 
   if (!decodedToken) {
-    const error = new Error("Not authenticated");
-    error.statusCode = 401;
-    throw error;
+    req.isAuth = false;
+    return next();
   }
 
   req.userId = decodedToken.userId;
+  req.isAuth = true;
   next();
 };
