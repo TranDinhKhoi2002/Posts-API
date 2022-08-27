@@ -41,7 +41,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
@@ -103,6 +103,12 @@ mongoose
     "mongodb+srv://nodejscourse:tLUZcLfbE01uJY1M@cluster0.9srxm.mongodb.net/post?retryWrites=true&w=majority"
   )
   .then((result) => {
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000, function () {
+      console.log(
+        "Express server listening on port %d in %s mode",
+        this.address().port,
+        app.settings.env
+      );
+    });
   })
   .catch((err) => console.log(err));
