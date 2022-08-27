@@ -103,6 +103,6 @@ mongoose
     "mongodb+srv://nodejscourse:tLUZcLfbE01uJY1M@cluster0.9srxm.mongodb.net/post?retryWrites=true&w=majority"
   )
   .then((result) => {
-    app.listen(8080);
+    app.listen(3000);
   })
   .catch((err) => console.log(err));
