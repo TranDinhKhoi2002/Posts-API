@@ -41,19 +41,12 @@ const fileFilter = (req, file, cb) => {
 };
 
 app.use((req, res, next) => {
-  // Here we allowed a specific origin to access our content, our data,
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  // Allowed these origins to use specific http methods
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE"
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
   );
-  // Clients can send requests that hold extra information in the header
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
   next();
 });
 
