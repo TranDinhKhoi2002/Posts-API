@@ -1,22 +1,22 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const path = require("path");
-
-const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 
-const { graphqlHTTP } = require("express-graphql");
-const graphqlSchema = require("./graphql/schema");
-const graphqlResolver = require("./graphql/resolvers");
+const mongoose = require("mongoose");
 const auth = require("./middleware/auth");
 
 const { clearImage } = require("./util/file");
 
+const { graphqlHTTP } = require("express-graphql");
+const graphqlSchema = require("./graphql/schema");
+const graphqlResolver = require("./graphql/resolvers");
+
 const app = express();
 
-app.use(bodyParser.json()); // parse json data from incoming request
+app.use(bodyParser.json());
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 const fileStorage = multer.diskStorage({
@@ -69,7 +69,7 @@ app.put("/post-image", (req, res, next) => {
   }
 
   if (!req.file) {
-    return res.status(200).json({ message: "No file provided" });
+    return res.status(200).json({ message: "No files provided" });
   }
 
   if (req.body.oldPath) {
@@ -77,7 +77,7 @@ app.put("/post-image", (req, res, next) => {
   }
 
   return res.status(201).json({
-    message: "Image stored",
+    message: "File stored",
     filePath: req.file.path.replace(/\\/g, "/"),
   });
 });
@@ -93,20 +93,16 @@ app.use(
         return err;
       }
 
-      const { data, code } = err.originalError;
+      const { data, code } = err;
       const message = err.message || "An error occurred";
-      return { message, status: code || 500, data };
+      return { message, data, status: code || 500 };
     },
   })
 );
 
 app.use((error, req, res, next) => {
-  const { statusCode, message, data } = error;
-
-  res.status(statusCode || 500).json({
-    message,
-    data,
-  });
+  const { statusCode, data, message } = error;
+  res.status(statusCode || 500).json({ message, data });
 });
 
 mongoose
